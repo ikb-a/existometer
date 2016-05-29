@@ -40,7 +40,7 @@ public class BingHits extends BasicSource<String, Integer, Void> implements Sear
 
 	@Override
 	public Integer getResponse(String input) throws UnknownException {
-		if (API_KEY.length() < 1)
+		if (API_KEY == null || API_KEY.length() < 1)
 			throw new RuntimeException("BING_KEY for BingHits is not present");
 
 		try {
