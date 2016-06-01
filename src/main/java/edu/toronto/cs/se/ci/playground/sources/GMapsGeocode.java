@@ -18,24 +18,27 @@ import edu.toronto.cs.se.ci.playground.data.Address;
 import edu.toronto.cs.se.ci.utils.BasicSource;
 
 public class GMapsGeocode extends BasicSource<Address, JSONObject, Void> {
+	private String API_KEY = System.getenv("GOOGLE_KEY");
 
 	@Override
 	public JSONObject getResponse(Address input) throws UnknownException {
-		String components = "street_number:" + input.getStreetNumber()
-					      + "|route:" + input.getRoute()
-					      + "|locality:" + input.getCity()
-					      + "|administrative_area_level_1:" + input.getProvence()
-					      + "|country:" + input.getCountry()
-					      + "|postal_code:" + input.getPostalCode();
-		
+		if (API_KEY == null) {
+			throw new RuntimeException("Google API Key missing. Please create environment variable GOOGLE_KEY");
+		}
+
+		String components = "street_number:" + input.getStreetNumber() + "|route:" + input.getRoute() + "|locality:"
+				+ input.getCity() + "|administrative_area_level_1:" + input.getProvence() + "|country:"
+				+ input.getCountry() + "|postal_code:" + input.getPostalCode();
+
 		try {
-			URL url = new URL("http://maps.googleapis.com/maps/api/geocode/json?components=" + URLEncoder.encode(components, "UTF-8"));
+			URL url = new URL("https://maps.googleapis.com/maps/api/geocode/json?components="
+					+ URLEncoder.encode(components, "UTF-8")+"&key="+API_KEY);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
-			
+
 			// Read in the entire file
 			StringBuilder sb = new StringBuilder();
 			String line = reader.readLine();
-			
+
 			while (line != null) {
 				sb.append(line);
 				line = reader.readLine();
@@ -51,9 +54,7 @@ public class GMapsGeocode extends BasicSource<Address, JSONObject, Void> {
 
 	@Override
 	public Expenditure[] getCost(Address args) throws Exception {
-		return new Expenditure[] {
-			new Time(500, TimeUnit.MILLISECONDS)
-		};
+		return new Expenditure[] { new Time(500, TimeUnit.MILLISECONDS) };
 	}
 
 	@Override

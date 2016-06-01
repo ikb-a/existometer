@@ -7,6 +7,8 @@ so.
 ## Requirements
 - This is a maven project.
 - Existometer requires Java 8+
+- To use Bing search results, the Bing API Key must be in the environment variable BING_KEY
+- To use Google geocoding, the Google Geocoding API Key must be in the environment variable GOOGLE_KEY
 
 ## Usage
 Run the main function, enter name, email, etc. and observe the results
