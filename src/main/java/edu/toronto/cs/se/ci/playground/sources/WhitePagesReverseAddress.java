@@ -44,8 +44,9 @@ public class WhitePagesReverseAddress extends BasicSource<Address, List<String>,
 			for (Element e : results) {
 				names.add(e.html());
 			}
-			
-			return names;
+			// source not working, needs to be fixed.
+			throw new UnknownException();
+			//return names;
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

@@ -17,13 +17,15 @@ import edu.toronto.cs.se.ci.budget.basic.Time;
 import edu.toronto.cs.se.ci.playground.contracts.SearchHits;
 import edu.toronto.cs.se.ci.utils.BasicSource;
 
+/**
+ * Current API is deprecated. Google Custom Search is a possible replacement,
+ * but has reduced functionality.
+ */
 public class GoogleHits extends BasicSource<String, Integer, Void> implements SearchHits {
 
 	@Override
 	public Expenditure[] getCost(String args) throws Exception {
-		return new Expenditure[] {
-			new Time(500, TimeUnit.MILLISECONDS)
-		};
+		return new Expenditure[] { new Time(500, TimeUnit.MILLISECONDS) };
 	}
 
 	@Override
@@ -33,15 +35,17 @@ public class GoogleHits extends BasicSource<String, Integer, Void> implements Se
 
 	@Override
 	public Integer getResponse(String input) throws UnknownException {
+
 		try {
 			// Connect to the remote URL
-			URL url = new URL("http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=" + URLEncoder.encode(input, "UTF-8"));
+			URL url = new URL(
+					"http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=" + URLEncoder.encode(input, "UTF-8"));
 			BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
-			
+
 			// Read in the entire file
 			StringBuilder sb = new StringBuilder();
 			String line = reader.readLine();
-			
+
 			while (line != null) {
 				sb.append(line);
 				line = reader.readLine();
@@ -52,13 +56,16 @@ public class GoogleHits extends BasicSource<String, Integer, Void> implements Se
 			int resultCount;
 
 			try {
-				resultCount = Integer.parseInt(obj.getJSONObject("responseData").getJSONObject("cursor").getString("resultCount"));
-			} catch(JSONException e) {
+				resultCount = Integer
+						.parseInt(obj.getJSONObject("responseData").getJSONObject("cursor").getString("resultCount"));
+			} catch (JSONException e) {
 				resultCount = 0;
 			}
-			
+
 			// Return an answer
-			return resultCount;
+			// return resultCount;
+			// Modified to return Unknown Exception, as the API no longer exists
+			throw new UnknownException();
 		} catch (Exception e) {
 			throw new UnknownException(e);
 		}

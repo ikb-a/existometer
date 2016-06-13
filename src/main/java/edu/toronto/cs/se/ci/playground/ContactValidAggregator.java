@@ -17,23 +17,27 @@ import edu.toronto.cs.se.ci.data.Result;
 import edu.toronto.cs.se.ci.playground.data.ContactTrust;
 
 public class ContactValidAggregator implements Aggregator<Boolean, ContactTrust, Double> {
-	
+
 	private List<Opinion<Boolean, Double>> filterZeros(List<Opinion<Boolean, Double>> items) {
-		return new ArrayList<>(Collections2.filter(items, (item) -> item.getTrust() != 0 ));
+		/*
+		 * A lamda expression create a predicate that takes an item and returns
+		 * whether the items's trust is not 0. Guava filter then returns a list
+		 * with items failing the predicate removed
+		 */
+		return new ArrayList<>(Collections2.filter(items, (item) -> item.getTrust() != 0));
 	}
 
 	@Override
-	public Optional<Result<Boolean, Double>> aggregate(
-			List<Opinion<Boolean, ContactTrust>> opinions) {
+	public Optional<Result<Boolean, Double>> aggregate(List<Opinion<Boolean, ContactTrust>> opinions) {
 		int size = opinions.size();
-		
+
 		List<Opinion<Boolean, Double>> nameOpinions = new ArrayList<>(size);
 		List<Opinion<Boolean, Double>> emailOpinions = new ArrayList<>(size);
 		List<Opinion<Boolean, Double>> addressOpinions = new ArrayList<>(size);
 		List<Opinion<Boolean, Double>> nameEmailOpinions = new ArrayList<>(size);
 		List<Opinion<Boolean, Double>> emailAddressOpinions = new ArrayList<>(size);
 		List<Opinion<Boolean, Double>> nameAddressOpinions = new ArrayList<>(size);
-		
+
 		for (Opinion<Boolean, ContactTrust> opinion : opinions) {
 			Boolean value = opinion.getValue();
 			ContactTrust trust = opinion.getTrust();
@@ -44,7 +48,7 @@ public class ContactValidAggregator implements Aggregator<Boolean, ContactTrust,
 			emailAddressOpinions.add(new Opinion<Boolean, Double>(value, trust.getEmailAddress()));
 			nameAddressOpinions.add(new Opinion<Boolean, Double>(value, trust.getNameAddress()));
 		}
-		
+
 		ProbBeliefAggregator<Boolean> agg = new ProbBeliefAggregator<Boolean>();
 		Optional<Result<Boolean, Double>> nameResult = agg.aggregate(filterZeros(nameOpinions));
 		Optional<Result<Boolean, Double>> emailResult = agg.aggregate(filterZeros(emailOpinions));
@@ -53,18 +57,20 @@ public class ContactValidAggregator implements Aggregator<Boolean, ContactTrust,
 		Optional<Result<Boolean, Double>> nameEmailResult = agg.aggregate(filterZeros(nameEmailOpinions));
 		Optional<Result<Boolean, Double>> emailAddressResult = agg.aggregate(filterZeros(emailAddressOpinions));
 		Optional<Result<Boolean, Double>> nameAddressResult = agg.aggregate(filterZeros(nameAddressOpinions));
-		
+
 		System.out.println(nameResult);
 		System.out.println(emailResult);
 		System.out.println(addressResult);
 		System.out.println(nameEmailResult);
 		System.out.println(emailAddressResult);
 		System.out.println(nameAddressResult);
-		
+
 		Result<Boolean, Double> nullResult = new Result<>(false, 0.0);
 
-		// Any two cooccurances implies the third cooccurance, we thus take the middle one
-		List<Optional<Result<Boolean, Double>>> cooccurances = Arrays.asList(nameEmailResult, emailAddressResult, nameAddressResult);
+		// Any two cooccurances implies the third cooccurance, we thus take the
+		// middle one
+		List<Optional<Result<Boolean, Double>>> cooccurances = Arrays.asList(nameEmailResult, emailAddressResult,
+				nameAddressResult);
 		cooccurances.sort((a, b) -> (int) Math.signum(a.or(nullResult).getQuality() - b.or(nullResult).getQuality()));
 
 		Comparator<Optional<Result<Boolean, Double>>> comparator = (oa, ob) -> {
@@ -81,11 +87,11 @@ public class ContactValidAggregator implements Aggregator<Boolean, ContactTrust,
 				return (int) Math.signum(a.getQuality() - b.getQuality());
 		};
 
-		// I'm not sure if we want to choose _exactly_ the "worst" result that we have from all sources, but it is _an_ option
-		Optional<Result<Boolean, Double>> worst = Collections.min(
-				ImmutableList.of(nameResult, emailResult, addressResult, cooccurances.get(1)),
-				comparator);
-		
+		// I'm not sure if we want to choose _exactly_ the "worst" result that
+		// we have from all sources, but it is _an_ option
+		Optional<Result<Boolean, Double>> worst = Collections
+				.min(ImmutableList.of(nameResult, emailResult, addressResult, cooccurances.get(1)), comparator);
+
 		return worst;
 	}
 

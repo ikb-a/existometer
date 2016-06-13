@@ -65,7 +65,7 @@ public class App {
 		String postalCode = br.readLine();
 		System.out.print("Enter your city: ");
 		String city = br.readLine();
-		System.out.print("Enter your provence: ");
+		System.out.print("Enter your province: ");
 		String provence = br.readLine();
 
 		Address address = new Address(number, route, city, provence, "Canada",
@@ -83,6 +83,9 @@ public class App {
 				new Time(4, TimeUnit.SECONDS) };
 		Contact contact = readContact();
 
+		/*
+		 * The ContactValidate class is used to identify sources which validate contacts.
+		 */
 		CI<Contact, Boolean, ContactTrust, Double> myCI = new CI<>(
 				ContactValidate.class, new ContactValidAggregator(),
 				new AllSelector<Contact, Boolean, ContactTrust>());
