@@ -41,12 +41,12 @@ public class ContactValidAggregator implements Aggregator<Boolean, ContactTrust,
 		for (Opinion<Boolean, ContactTrust> opinion : opinions) {
 			Boolean value = opinion.getValue();
 			ContactTrust trust = opinion.getTrust();
-			nameOpinions.add(new Opinion<Boolean, Double>(value, trust.getName()));
-			emailOpinions.add(new Opinion<Boolean, Double>(value, trust.getEmail()));
-			addressOpinions.add(new Opinion<Boolean, Double>(value, trust.getAddress()));
-			nameEmailOpinions.add(new Opinion<Boolean, Double>(value, trust.getNameEmail()));
-			emailAddressOpinions.add(new Opinion<Boolean, Double>(value, trust.getEmailAddress()));
-			nameAddressOpinions.add(new Opinion<Boolean, Double>(value, trust.getNameAddress()));
+			nameOpinions.add(new Opinion<Boolean, Double>(value, trust.getName(),"ContactValidAggregator_Name"));
+			emailOpinions.add(new Opinion<Boolean, Double>(value, trust.getEmail(),"ContactValidAggregator_Email"));
+			addressOpinions.add(new Opinion<Boolean, Double>(value, trust.getAddress(),"ContactValidAggregator_Address"));
+			nameEmailOpinions.add(new Opinion<Boolean, Double>(value, trust.getNameEmail(),"ContactValidAggregator_NameEmail"));
+			emailAddressOpinions.add(new Opinion<Boolean, Double>(value, trust.getEmailAddress(),"ContactValidAggregator_EmailAddress"));
+			nameAddressOpinions.add(new Opinion<Boolean, Double>(value, trust.getNameAddress(),"ContactValidAggregator_NameAddress"));
 		}
 
 		ProbBeliefAggregator<Boolean> agg = new ProbBeliefAggregator<Boolean>();

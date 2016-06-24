@@ -1,11 +1,5 @@
 package edu.toronto.cs.se.ci.playground.sources;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 
 import org.json.JSONException;

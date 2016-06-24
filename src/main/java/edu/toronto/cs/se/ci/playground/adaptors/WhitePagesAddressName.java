@@ -70,7 +70,7 @@ public class WhitePagesAddressName extends Adaptor<Contact, Boolean, ContactTrus
 			0,
 			0,
 			conf
-		));
+		), around.getName());
 	}
 
 	@Override
